@@ -7,43 +7,42 @@ def main(page: ft.Page):
     page.padding = 0
     page.spacing = 0
     page.bgcolor = "#000000"
-    page.scroll = "auto" # اسکرول اصلی صفحه
+    page.scroll = "auto" # اسکرول اصلی روی صفحه باشد
 
-    # --- رنگ‌ها (کد هگز ثابت برای جلوگیری از ارور) ---
+    # --- پالت رنگ (Hex Code) ---
     glass_bg = "#B3101216"      
     card_glass = "#801A1D24"    
     border_color = "#4DFFFFFF"  
     accent_color = "cyan"
     text_muted = "#B0B3B8"
     
-    # رنگ‌های بج
     badge_green = "#334CAF50"
     badge_orange = "#33FF9800"
     badge_red = "#33F44336"
 
     # --- داده‌ها ---
     properties_data = [
-        {"name": "The St Kilda Esplanade", "loc": "Melbourne", "occ": "94%", "rev": "$24,500", "status": "Clean Data"},
-        {"name": "Sydney Harbour View", "loc": "Sydney", "occ": "88%", "rev": "$31,200", "status": "Clean Data"},
+        {"name": "St Kilda Esplanade", "loc": "Melbourne", "occ": "94%", "rev": "$24,500", "status": "Clean Data"},
+        {"name": "Sydney Harbour", "loc": "Sydney", "occ": "88%", "rev": "$31,200", "status": "Clean Data"},
         {"name": "Gold Coast Resort", "loc": "Gold Coast", "occ": "98%", "rev": "$45,000", "status": "Xero Sync"},
         {"name": "Adelaide Heritage", "loc": "Adelaide", "occ": "76%", "rev": "$12,400", "status": "Review Needed"},
         {"name": "Perth City Center", "loc": "Perth", "occ": "82%", "rev": "$18,900", "status": "Clean Data"},
-        {"name": "Brisbane River Suites", "loc": "Brisbane", "occ": "91%", "rev": "$22,100", "status": "Mews Audit"},
-        {"name": "Hobart Waterfront", "loc": "Tasmania", "occ": "85%", "rev": "$15,600", "status": "Clean Data"},
+        {"name": "Brisbane Suites", "loc": "Brisbane", "occ": "91%", "rev": "$22,100", "status": "Mews Audit"},
     ]
 
     # --- کامپوننت‌ها ---
     def create_status_badge(status):
-        if "Clean" in status: bg, border = badge_green, "green"
-        elif "Sync" in status: bg, border = badge_orange, "orange"
-        else: bg, border = badge_red, "red"
+        if "Clean" in status: bg, b_col = badge_green, "green"
+        elif "Sync" in status: bg, b_col = badge_orange, "orange"
+        else: bg, b_col = badge_red, "red"
             
         return ft.Container(
             content=ft.Text(status, size=11, weight="bold", color="white"),
             bgcolor=bg,
-            padding=ft.padding.symmetric(horizontal=10, vertical=5),
+            # اصلاح Padding و Border طبق نسخه جدید
+            padding=ft.Padding(10, 5, 10, 5), 
             border_radius=15,
-            border=ft.border.all(1, border)
+            border=ft.Border.all(1, b_col)
         )
 
     def create_kpi_card(title, value, subtext, icon, trend_up=True):
@@ -65,7 +64,7 @@ def main(page: ft.Page):
             ], spacing=15),
             bgcolor=card_glass,
             padding=15, border_radius=15, expand=True,
-            border=ft.border.all(1, border_color)
+            border=ft.Border.all(1, border_color)
         )
 
     def create_mini_chart(label, value_height):
@@ -94,6 +93,8 @@ def main(page: ft.Page):
         return ft.Column([
             ft.Text("Portfolio Overview", size=22, weight="bold"),
             ft.Divider(height=10, color="transparent"),
+            
+            # بخش KPI (ریسپانسیو)
             ft.Row([
                 create_kpi_card("Total Revenue", "$169,700", "Daily Aggr.", "attach_money"),
                 create_kpi_card("Occupancy", "87.7%", "+2% vs L.W.", "hotel"),
@@ -102,17 +103,19 @@ def main(page: ft.Page):
             
             ft.Divider(height=20, color="transparent"),
             ft.Text("Weekly Revenue Trend", size=14, color=text_muted),
+            
+            # بخش چارت
             ft.Row([
                 create_mini_chart("Mon", 40), create_mini_chart("Tue", 70),
                 create_mini_chart("Wed", 50), create_mini_chart("Thu", 90),
                 create_mini_chart("Fri", 100)
-            ], spacing=20, scroll="auto"), # اسکرول برای چارت در موبایل
+            ], spacing=20, scroll="auto"),
             
             ft.Divider(height=20, color="transparent"),
             
-            # --- FIX: Container Scroll removed, Row Scroll added ---
+            # --- اصلاح اساسی برای جلوگیری از ارور اسکرول ---
             ft.Container(
-                content=ft.Row( # اضافه کردن Row برای هندل کردن اسکرول افقی
+                content=ft.Row( # اسکرول را به Row می‌دهیم نه Container
                     [
                         ft.DataTable(
                             columns=[
@@ -131,15 +134,15 @@ def main(page: ft.Page):
                             column_spacing=20
                         )
                     ],
-                    scroll="auto" # اسکرول افقی اینجا تعریف می‌شود
+                    scroll="auto" # اسکرول افقی اینجا تعریف شد
                 ),
                 bgcolor=card_glass, 
                 border_radius=15, 
                 padding=20,
-                border=ft.border.all(1, border_color),
-                # scroll="auto" # <--- این خط حذف شد چون باعث ارور بود
+                border=ft.Border.all(1, border_color)
+                # نکته: scroll="auto" از اینجا حذف شد
             )
-        ], scroll="auto", expand=True)
+        ], scroll="auto", expand=True) # اسکرول عمودی برای کل ستون
 
     def get_framework_content():
         return ft.Column([
@@ -154,7 +157,7 @@ def main(page: ft.Page):
                     ft.Column([ft.Icon("dashboard", color="cyan"), ft.Text("Dashboard")]),
                 ], alignment="center", spacing=20, wrap=True),
                 bgcolor="#1AFFFFFF", padding=20, border_radius=15,
-                border=ft.border.all(1, border_color)
+                border=ft.Border.all(1, border_color)
             )
         ], expand=True)
 
@@ -180,11 +183,7 @@ def main(page: ft.Page):
     )
 
     page.add(
-        ft.Stack([
-            ft.Image(src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb", width=1400, height=950, fit=ft.ImageFit.COVER, opacity=0.4),
-            ft.Container(gradient=ft.LinearGradient(colors=["#CC000000", "#E6101216"]), expand=True),
-            ft.Row([sidebar, ft.VerticalDivider(width=1, color="#1AFFFFFF"), content_area], expand=True)
-        ], expand=True)
+        ft.Row([sidebar, ft.VerticalDivider(width=1, color="#1AFFFFFF"), content_area], expand=True)
     )
 
 if __name__ == "__main__":
