@@ -1,4 +1,5 @@
 import flet as ft
+import os  # <--- این خط حیاتی است
 
 def main(page: ft.Page):
     # --- 1. تنظیمات صفحه ---
@@ -6,14 +7,12 @@ def main(page: ft.Page):
     page.theme_mode = "dark"
     page.padding = 0
     page.spacing = 0
-    # رنگ پس‌زمینه لوکس (سرمه‌ای/مشکی خیلی تیره) به جای عکس سنگین
     page.bgcolor = "#0E0E10" 
-    page.scroll = None # اسکرول صفحه خاموش (کانتنت اسکرول دارد)
+    page.scroll = None 
 
     # --- 2. پالت رنگ (Hex Safe) ---
-    card_bg = "#1F1F22"       # رنگ کارت‌ها (مات و فلت)
-    border_color = "#33FFFFFF" 
-    accent_color = "#00F0FF"  # سایان نئونی
+    card_bg = "#1F1F22"       
+    accent_color = "#00F0FF"  
     text_muted = "#8A8A93"
     
     badge_green = "#1F3A25"
@@ -41,8 +40,8 @@ def main(page: ft.Page):
             content=ft.Text(status, size=10, weight="bold", color=t_col),
             bgcolor=bg,
             padding=ft.Padding(8, 4, 8, 4),
-            border_radius=4, # گوشه‌های کمی تیزتر (مدرن‌تر)
-            border=ft.Border.all(1, bg) # بدون بوردر رنگی جیغ
+            border_radius=4,
+            border=ft.Border.all(1, bg)
         )
 
     def create_kpi_card(title, value, subtext, icon, trend_up=True):
@@ -63,7 +62,7 @@ def main(page: ft.Page):
             padding=20, 
             border_radius=12,
             expand=True,
-            border=ft.Border.all(1, "#333333") # بوردر خیلی ظریف
+            border=ft.Border.all(1, "#333333")
         )
 
     def create_mini_chart(label, value_height):
@@ -117,7 +116,6 @@ def main(page: ft.Page):
                     
                     ft.Divider(height=15, color="transparent"),
                     
-                    # جدول با اسکرول ایمن
                     ft.Row([
                         ft.DataTable(
                             columns=[
@@ -140,7 +138,7 @@ def main(page: ft.Page):
                 bgcolor=card_bg, padding=25, border_radius=12,
                 border=ft.Border.all(1, "#333333")
             )
-        ], scroll="hidden", expand=True) # اسکرول مخفی برای زیبایی
+        ], scroll="hidden", expand=True)
 
     # --- 6. محتوای Framework ---
     def get_framework_content():
@@ -160,9 +158,7 @@ def main(page: ft.Page):
             )
         ], expand=True)
 
-    # --- 7. ساختار اصلی (بدون Stack، بدون عکس) ---
-    # این ساختار 100% امن است و سفید نمی‌شود
-    
+    # --- 7. ساختار اصلی ---
     content_area = ft.Container(content=get_overview_content(), expand=True, padding=30)
 
     def change_view(e):
@@ -175,7 +171,7 @@ def main(page: ft.Page):
         selected_index=0,
         label_type="all",
         min_width=90,
-        bgcolor="#0A0A0C", # کمی تیره‌تر از پس‌زمینه
+        bgcolor="#0A0A0C",
         group_alignment=-0.9,
         destinations=[
             ft.NavigationRailDestination(icon="dashboard", label="Dash"),
@@ -186,14 +182,12 @@ def main(page: ft.Page):
 
     page.add(
         ft.Row(
-            [
-                sidebar, 
-                ft.VerticalDivider(width=1, color="#222222"), 
-                content_area
-            ], 
-            expand=True # این خط حیاتی است
+            [sidebar, ft.VerticalDivider(width=1, color="#222222"), content_area], 
+            expand=True
         )
     )
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    # --- FIX CRITICAL: تنظیم پورت برای سرور Render ---
+    port = int(os.environ.get("PORT", 8080))
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=port, host="0.0.0.0")
