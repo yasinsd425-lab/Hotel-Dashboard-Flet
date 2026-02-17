@@ -8,10 +8,10 @@
 
 ---
 
-## 🔴 Live Demo
-Experience the real-time dashboard here:
-### [👉 Launch App on Render](https://YOUR-RENDER-LINK-HERE.onrender.com)
-*(Note: Please allow 30-60 seconds for the free instance to wake up)*
+## 📸 App Screenshots
+![Executive Dashboard](LINK_TO_YOUR_UPLOADED_IMAGE.png)
+
+> *This application is designed for internal network deployment using Python/Flet.*
 
 ---
 
