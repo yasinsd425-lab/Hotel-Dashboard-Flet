@@ -7,22 +7,21 @@ def main(page: ft.Page):
     page.padding = 0
     page.spacing = 0
     page.bgcolor = "#000000"
-    page.scroll = "auto"
+    page.scroll = "auto" # اسکرول اصلی صفحه
 
-    # --- اصلاح رنگ‌ها (استفاده از کد هگز به جای توابع ارور-دار) ---
-    # فرمت: #AARRGGBB (دو رقم اول شفافیت است)
-    glass_bg = "#B3101216"      # معادل opacity 0.7
-    card_glass = "#801A1D24"    # معادل opacity 0.5
-    border_color = "#4DFFFFFF"  # معادل opacity 0.3
+    # --- رنگ‌ها (کد هگز ثابت برای جلوگیری از ارور) ---
+    glass_bg = "#B3101216"      
+    card_glass = "#801A1D24"    
+    border_color = "#4DFFFFFF"  
     accent_color = "cyan"
     text_muted = "#B0B3B8"
     
-    # رنگ‌های وضعیت
+    # رنگ‌های بج
     badge_green = "#334CAF50"
     badge_orange = "#33FF9800"
     badge_red = "#33F44336"
 
-    # --- داده‌های هتل ---
+    # --- داده‌ها ---
     properties_data = [
         {"name": "The St Kilda Esplanade", "loc": "Melbourne", "occ": "94%", "rev": "$24,500", "status": "Clean Data"},
         {"name": "Sydney Harbour View", "loc": "Sydney", "occ": "88%", "rev": "$31,200", "status": "Clean Data"},
@@ -35,12 +34,9 @@ def main(page: ft.Page):
 
     # --- کامپوننت‌ها ---
     def create_status_badge(status):
-        if "Clean" in status:
-            bg, border = badge_green, "green"
-        elif "Sync" in status:
-            bg, border = badge_orange, "orange"
-        else:
-            bg, border = badge_red, "red"
+        if "Clean" in status: bg, border = badge_green, "green"
+        elif "Sync" in status: bg, border = badge_orange, "orange"
+        else: bg, border = badge_red, "red"
             
         return ft.Container(
             content=ft.Text(status, size=11, weight="bold", color="white"),
@@ -103,34 +99,45 @@ def main(page: ft.Page):
                 create_kpi_card("Occupancy", "87.7%", "+2% vs L.W.", "hotel"),
                 create_kpi_card("System Health", "98%", "Stable", "dns"),
             ], spacing=20, wrap=True),
+            
             ft.Divider(height=20, color="transparent"),
             ft.Text("Weekly Revenue Trend", size=14, color=text_muted),
             ft.Row([
                 create_mini_chart("Mon", 40), create_mini_chart("Tue", 70),
                 create_mini_chart("Wed", 50), create_mini_chart("Thu", 90),
                 create_mini_chart("Fri", 100)
-            ], spacing=20),
+            ], spacing=20, scroll="auto"), # اسکرول برای چارت در موبایل
+            
             ft.Divider(height=20, color="transparent"),
+            
+            # --- FIX: Container Scroll removed, Row Scroll added ---
             ft.Container(
-                content=ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("PROPERTY")),
-                        ft.DataColumn(ft.Text("LOC")),
-                        ft.DataColumn(ft.Text("OCC")),
-                        ft.DataColumn(ft.Text("REV")),
-                        ft.DataColumn(ft.Text("RevPAR", color=accent_color)),
-                        ft.DataColumn(ft.Text("STATUS")),
+                content=ft.Row( # اضافه کردن Row برای هندل کردن اسکرول افقی
+                    [
+                        ft.DataTable(
+                            columns=[
+                                ft.DataColumn(ft.Text("PROPERTY")),
+                                ft.DataColumn(ft.Text("LOC")),
+                                ft.DataColumn(ft.Text("OCC")),
+                                ft.DataColumn(ft.Text("REV")),
+                                ft.DataColumn(ft.Text("RevPAR", color=accent_color)),
+                                ft.DataColumn(ft.Text("STATUS")),
+                            ],
+                            rows=rows,
+                            heading_row_height=40,
+                            data_row_min_height=55,
+                            vertical_lines=ft.border.BorderSide(0, "transparent"),
+                            horizontal_lines=ft.border.BorderSide(1, "#1AFFFFFF"),
+                            column_spacing=20
+                        )
                     ],
-                    rows=rows,
-                    heading_row_height=40,
-                    data_row_min_height=55,
-                    vertical_lines=ft.border.BorderSide(0, "transparent"),
-                    horizontal_lines=ft.border.BorderSide(1, "#1AFFFFFF"),
-                    column_spacing=20
+                    scroll="auto" # اسکرول افقی اینجا تعریف می‌شود
                 ),
-                bgcolor=card_glass, border_radius=15, padding=20,
+                bgcolor=card_glass, 
+                border_radius=15, 
+                padding=20,
                 border=ft.border.all(1, border_color),
-                scroll="auto"
+                # scroll="auto" # <--- این خط حذف شد چون باعث ارور بود
             )
         ], scroll="auto", expand=True)
 
@@ -173,7 +180,11 @@ def main(page: ft.Page):
     )
 
     page.add(
-        ft.Row([sidebar, ft.VerticalDivider(width=1, color="#1AFFFFFF"), content_area], expand=True)
+        ft.Stack([
+            ft.Image(src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb", width=1400, height=950, fit=ft.ImageFit.COVER, opacity=0.4),
+            ft.Container(gradient=ft.LinearGradient(colors=["#CC000000", "#E6101216"]), expand=True),
+            ft.Row([sidebar, ft.VerticalDivider(width=1, color="#1AFFFFFF"), content_area], expand=True)
+        ], expand=True)
     )
 
 if __name__ == "__main__":
