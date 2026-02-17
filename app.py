@@ -7,9 +7,9 @@ def main(page: ft.Page):
     page.padding = 0
     page.spacing = 0
     page.bgcolor = "#000000"
-    page.scroll = "auto" # اسکرول اصلی روی صفحه باشد
+    page.scroll = "auto" # اسکرول اصلی
 
-    # --- پالت رنگ (Hex Code) ---
+    # --- پالت رنگ (Hex Code برای جلوگیری از ارور) ---
     glass_bg = "#B3101216"      
     card_glass = "#801A1D24"    
     border_color = "#4DFFFFFF"  
@@ -39,9 +39,10 @@ def main(page: ft.Page):
         return ft.Container(
             content=ft.Text(status, size=11, weight="bold", color="white"),
             bgcolor=bg,
-            # اصلاح Padding و Border طبق نسخه جدید
+            # FIX 1: استفاده از Padding کلاس با حرف بزرگ (رفع Deprecation)
             padding=ft.Padding(10, 5, 10, 5), 
             border_radius=15,
+            # FIX 2: استفاده از Border کلاس با حرف بزرگ (رفع Deprecation)
             border=ft.Border.all(1, b_col)
         )
 
@@ -94,7 +95,6 @@ def main(page: ft.Page):
             ft.Text("Portfolio Overview", size=22, weight="bold"),
             ft.Divider(height=10, color="transparent"),
             
-            # بخش KPI (ریسپانسیو)
             ft.Row([
                 create_kpi_card("Total Revenue", "$169,700", "Daily Aggr.", "attach_money"),
                 create_kpi_card("Occupancy", "87.7%", "+2% vs L.W.", "hotel"),
@@ -104,7 +104,6 @@ def main(page: ft.Page):
             ft.Divider(height=20, color="transparent"),
             ft.Text("Weekly Revenue Trend", size=14, color=text_muted),
             
-            # بخش چارت
             ft.Row([
                 create_mini_chart("Mon", 40), create_mini_chart("Tue", 70),
                 create_mini_chart("Wed", 50), create_mini_chart("Thu", 90),
@@ -113,9 +112,9 @@ def main(page: ft.Page):
             
             ft.Divider(height=20, color="transparent"),
             
-            # --- اصلاح اساسی برای جلوگیری از ارور اسکرول ---
+            # FIX 3: اسکرول را به Row دادیم و از کانتینر حذف کردیم
             ft.Container(
-                content=ft.Row( # اسکرول را به Row می‌دهیم نه Container
+                content=ft.Row(
                     [
                         ft.DataTable(
                             columns=[
@@ -134,15 +133,14 @@ def main(page: ft.Page):
                             column_spacing=20
                         )
                     ],
-                    scroll="auto" # اسکرول افقی اینجا تعریف شد
+                    scroll="auto" # اسکرول صحیح اینجاست
                 ),
                 bgcolor=card_glass, 
                 border_radius=15, 
                 padding=20,
                 border=ft.Border.all(1, border_color)
-                # نکته: scroll="auto" از اینجا حذف شد
             )
-        ], scroll="auto", expand=True) # اسکرول عمودی برای کل ستون
+        ], scroll="auto", expand=True)
 
     def get_framework_content():
         return ft.Column([
@@ -182,8 +180,18 @@ def main(page: ft.Page):
         on_change=change_view
     )
 
+    # FIX 4: استفاده از "cover" به عنوان رشته متنی (جلوگیری از ارور ImageFit)
     page.add(
-        ft.Row([sidebar, ft.VerticalDivider(width=1, color="#1AFFFFFF"), content_area], expand=True)
+        ft.Stack([
+            ft.Image(
+                src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb",
+                width=1400, height=950,
+                fit="cover", # <--- تغییر مهم: استفاده از String
+                opacity=0.4
+            ),
+            ft.Container(gradient=ft.LinearGradient(colors=["#CC000000", "#E6101216"]), expand=True),
+            ft.Row([sidebar, ft.VerticalDivider(width=1, color="#1AFFFFFF"), content_area], expand=True)
+        ], expand=True)
     )
 
 if __name__ == "__main__":
