@@ -8,8 +8,16 @@
 
 ---
 
-## 📸 App Screenshots
-![Executive Dashboard](LINK_TO_YOUR_UPLOADED_IMAGE.png)
+## 📸 Project Gallery
+
+| View | Description |
+| :--- | :--- |
+| **Executive Overview** | Real-time tracking of **RevPAR**, **Occupancy**, and **Revenue**. Features a custom-built weekly trend chart and interactive data table with conditional formatting. |
+| ![Overview Screenshot](https://github.com/yasinsd425-lab/Hotel-Dashboard-Flet/blob/main/Screenshot%202026-02-17%20181916.png) | |
+| **System Architecture** | Visualizes the data pipeline from **Xero/Mews** (Source) to **Python** (Processing) and **Flet** (UI). Demonstrates understanding of full-stack data flow. |
+| ![Architecture Screenshot](https://github.com/yasinsd425-lab/Hotel-Dashboard-Flet/blob/main/Screenshot%202026-02-17%20185428.png) | 
+| ![Reports Screenshot](https://github.com/yasinsd425-lab/Hotel-Dashboard-Flet/blob/main/Screenshot%202026-02-17%20185402.png) | 
+| ![Ops Screenshot](https://github.com/yasinsd425-lab/Hotel-Dashboard-Flet/blob/main/Screenshot%202026-02-17%20185417.png) | 
 
 > *This application is designed for internal network deployment using Python/Flet.*
 
